@@ -38,7 +38,7 @@ WEDの冬休みの宿題。自動販売機。
 
 # ER図
 
-![ER図](./images/maeding machine.png)
+![ER図](images/maeding_machine.png)
 
 # Build
 
