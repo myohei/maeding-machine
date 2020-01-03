@@ -1,0 +1,28 @@
+version: '3'
+services:
+  db:
+    image: mysql:5.7
+    env_file: middleware/mysql/.env
+    networks: 
+       migration:
+        aliases: 
+          - database
+    ports: 
+      - 13306:3306
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+    volumes:
+      - db-data:/var/lib/mysql
+  migrate:
+    image: migrate/migrate
+    networks: 
+      - migration
+    volumes:
+        - ./db/migrations:/migrations
+    command: ["-path", "/migrations", "-database",  "mysql://maeda:maeda@tcp(db:3306)/maeding_machine", "up"]
+    depends_on: 
+        - db
+volumes:
+  db-data:
+    driver: local
+networks: 
+  migration:
