@@ -1,37 +1,40 @@
 package company.wed
 
-import io.ktor.application.*
-import io.ktor.response.*
-import io.ktor.request.*
-import io.ktor.routing.*
-import io.ktor.http.*
-import io.ktor.sessions.*
-import io.ktor.features.*
-import org.slf4j.event.*
-import com.fasterxml.jackson.databind.*
+import com.fasterxml.jackson.databind.SerializationFeature
 import company.wed.data.db.MysqlDbConnector
+import company.wed.data.features.lucky.luckyModule
+import company.wed.graphql.gqlModule
+import company.wed.graphql.installGql
+import company.wed.data.repositories.repositoryModule
 import company.wed.routes.setupRoutes
-import company.wed.services.SetupService
-import company.wed.services.impl.SetupServiceImpl
 import company.wed.services.serviceModule
-import io.ktor.jackson.*
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.name
+import io.ktor.application.Application
+import io.ktor.application.call
+import io.ktor.application.install
+import io.ktor.features.*
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.jackson.jackson
+import io.ktor.request.path
+import io.ktor.response.respond
+import io.ktor.response.respondText
+import io.ktor.routing.get
+import io.ktor.routing.routing
+import io.ktor.sessions.*
 import org.koin.Logger.slf4jLogger
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.koin.ktor.ext.Koin
+import org.slf4j.event.Level
+import java.time.Duration
+import kotlin.collections.mapOf
+import kotlin.collections.set
 
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-val a = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)
+
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
-    val graphQLSchemaString = requireNotNull(this::class.java.classLoader.getResource("schema.graphql")).readText()
-//    a.info(graphQLSchemaString)
-
     val dbConnector = MysqlDbConnector(
         dbUrl,
         dbUseName,
@@ -39,16 +42,21 @@ fun Application.module(testing: Boolean = false) {
     )
     val db = dbConnector.connect()
     install(Koin) {
-        slf4jLogger()
+        slf4jLogger(org.koin.core.logger.Level.INFO)
+        modules(repositoryModule)
         modules(serviceModule)
+        modules(gqlModule)
+        modules(luckyModule)
         modules(org.koin.dsl.module(createdAtStart = true) {
             single { db }
         })
     }
-
+    installGql()
     install(Sessions) {
         cookie<MySession>("MY_SESSION") {
             cookie.extensions["SameSite"] = "lax"
+            cookie.path = "/"
+            cookie.duration = Duration.ofMinutes(10)
         }
     }
 
@@ -66,11 +74,8 @@ fun Application.module(testing: Boolean = false) {
         level = Level.INFO
         filter { call -> call.request.path().startsWith("/") }
     }
-
     install(ConditionalHeaders)
-
     install(DataConversion)
-
     install(ContentNegotiation) {
         jackson {
             enable(SerializationFeature.INDENT_OUTPUT)
@@ -82,12 +87,6 @@ fun Application.module(testing: Boolean = false) {
         get("/") {
             call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
         }
-        get("/session/increment") {
-            val session = call.sessions.get<MySession>() ?: MySession()
-            call.sessions.set(session.copy(count = session.count + 1))
-            call.respondText("Counter is ${session.count}. Refresh to increment.")
-        }
-
         install(StatusPages) {
             exception<AuthenticationException> { cause ->
                 call.respond(HttpStatusCode.Unauthorized)
@@ -95,7 +94,6 @@ fun Application.module(testing: Boolean = false) {
             exception<AuthorizationException> { cause ->
                 call.respond(HttpStatusCode.Forbidden)
             }
-
         }
 
         get("/json/jackson") {

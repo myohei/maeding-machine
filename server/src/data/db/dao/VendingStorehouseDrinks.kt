@@ -5,9 +5,9 @@ import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.jodatime.datetime
 import org.joda.time.DateTime
 
-object VendingStorehouseDrinkDao : IntIdTable("vending_storehouse_drink") {
-    val drink = reference("drink_id", DrinksDao)
-    val temperature = reference("temperature_id", TemperaturesDao)
+object VendingStorehouseDrinks : IntIdTable("vending_storehouse_drinks") {
+    val drink = reference("drink_id", Drinks)
+    val temperature = reference("temperature_id", Temperatures)
     val amount: Column<Int> = integer("amount")
     val status: Column<StatusEnum> = statusEnumColumn(this)
     val createdAt: Column<DateTime> = datetime("created_at").default(DateTime.now())

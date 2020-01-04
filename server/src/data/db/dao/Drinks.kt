@@ -6,7 +6,7 @@ import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.jodatime.datetime
 import org.joda.time.DateTime
 
-object DrinksDao : IntIdTable("drinks") {
+object Drinks : IntIdTable("drinks") {
     val name: Column<String> = varchar("name", 255)
     val image: Column<String> = text("image")
     val type: Column<DrinkTypeEnum> = drinkTypeEnumColumn(this)

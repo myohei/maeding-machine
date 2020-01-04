@@ -1,8 +1,7 @@
 package company.wed.graphql
 
-import graphql.nextgen.GraphQL
-import graphql.schema.idl.RuntimeWiring
+import graphql.schema.GraphQLSchema
 
 interface Schema {
-    fun create(): GraphQL
+    fun create(): GraphQLSchema
 }

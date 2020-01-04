@@ -1,4 +1,4 @@
-package company.wed.repositories
+package company.wed.data.repositories
 
 import company.wed.domain.Drink
 

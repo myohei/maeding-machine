@@ -38,6 +38,7 @@ dependencies {
     compile "io.ktor:ktor-server-host-common:$ktor_version"
     compile "io.ktor:ktor-jackson:$ktor_version"
     compile "com.graphql-java:graphql-java:$graphql_version"
+    compile "com.expediagroup:graphql-kotlin-schema-generator:$graphql_kotlin_version"
     // DI
     compile "org.koin:koin-core:$koin_version"
     compile "org.koin:koin-ktor:$koin_version"
