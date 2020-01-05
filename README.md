@@ -8,8 +8,9 @@ WEDの冬休みの宿題。自動販売機。
 	- ktor
 - MySQL 5.7
 	- migration: [golang-migration/migrate](https://github.com/golang-migrate/migrate)
-- GraphQL
-- docker, docker-compose
+- [GraphQL](https://graphql.org/)
+	- [graphql/graphiql](https://github.com/graphql/graphiql)
+- Docker, Docker Compose
 
 # 仕様
 
@@ -30,13 +31,13 @@ WEDの冬休みの宿題。自動販売機。
 	- たまに当たる
 		- くじ付き
 		- おまけ1本
-	- お金
+	- お金(**実装できず**)
 		- ユーザ毎にセッション持つ(10分)
 		- 投入金額自由
 		- 買ったらお釣り出る
 	- 売れ行きのログ取りたい
 
-# ER図
+# [ER図](https://dbdiagram.io/d/5e0f1ab4edf08a25543f951b)
 
 ![ER図](images/maeding_machine.png)
 
@@ -44,17 +45,49 @@ WEDの冬休みの宿題。自動販売機。
 
 ## migration
 
-runでcmd渡したいなぁ。
+runでcmd渡したいなぁ。(次回)
 
 ```
-$ docker-compose up db
 $ docker-compose run migrate
 ```
 
 ## server
 
+```
+$ pwd
+/path/to/mading-machine/server
 
-TODO
+# local run 
+$ ./gradlew run
+
+# build
+$ ./gradlew build
+
+# docker build
+$ ./gradlew build
+$ docker build -t wed/maeding-machine .
+```
+
+## docker compose
+
+```
+$ pwd
+/path/to/mading-machine
+
+$ docker-compose up --build
+```
+
+# Local Debug
+
+serverを立ち上げて、GraphiQLにアクセス！
+
+```
+$ pwd
+/path/to/mading-machine/server
+
+$ ./gradlew run
+$ open http://localhost:8080/graphiql
+```
 
 
 ## 参考
