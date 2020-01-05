@@ -1,0 +1,67 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.github.jengelman.gradle.plugins:shadow:5.1.0"
+    }
+}
+
+apply plugin: 'kotlin'
+apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: 'application'
+
+group 'company.wed'
+version '0.0.1'
+mainClassName = "io.ktor.server.netty.EngineMain"
+//mainClassName = 'company.wed.ApplicationKt'
+
+sourceSets {
+    main.kotlin.srcDirs = main.java.srcDirs = ['src']
+    test.kotlin.srcDirs = test.java.srcDirs = ['test']
+    main.resources.srcDirs = ['resources']
+    test.resources.srcDirs = ['testresources']
+}
+
+repositories {
+    mavenLocal()
+    jcenter()
+    maven { url 'https://kotlin.bintray.com/ktor' }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    compile "io.ktor:ktor-server-netty:$ktor_version"
+    compile "ch.qos.logback:logback-classic:$logback_version"
+    compile "io.ktor:ktor-server-core:$ktor_version"
+    compile "io.ktor:ktor-metrics:$ktor_version"
+    compile "io.ktor:ktor-server-sessions:$ktor_version"
+    compile "io.ktor:ktor-server-host-common:$ktor_version"
+    compile "io.ktor:ktor-jackson:$ktor_version"
+    compile "com.graphql-java:graphql-java:$graphql_version"
+    compile "com.expediagroup:graphql-kotlin-schema-generator:$graphql_kotlin_version"
+    // DI
+    compile "org.koin:koin-core:$koin_version"
+    compile "org.koin:koin-ktor:$koin_version"
+    compile "org.koin:koin-logger-slf4j:$koin_version"
+    testCompile "org.koin:koin-test:$koin_version"
+    // Datablase
+    compile "org.jetbrains.exposed:exposed-core:$exposed_version"
+    compile "org.jetbrains.exposed:exposed-dao:$exposed_version"
+    compile "org.jetbrains.exposed:exposed-jdbc:$exposed_version"
+    compile "org.jetbrains.exposed:exposed-jodatime:$exposed_version"
+    compile "mysql:mysql-connector-java:$mysql_jdbc_driver_version"
+    // datetime
+    compile "joda-time:joda-time:$jodatime_version"
+    testCompile "io.ktor:ktor-server-tests:$ktor_version"
+}
+
+
+shadowJar {
+    baseName = 'maeding-machine'
+    classifier = null
+    version = null
+}
