@@ -1,5 +1,18 @@
 version: '3'
 services:
+  web:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    environment: 
+      - PORT=8080
+      - DB_URL=jdbc:mysql://db:3306/maeding_machine
+      - DB_USERNAME=maeda
+      - DB_PASSWORD=maeda 
+    depends_on: 
+      - db
   db:
     image: mysql:5.7
     env_file: middleware/mysql/.env

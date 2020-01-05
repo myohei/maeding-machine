@@ -2,10 +2,10 @@ package company.wed
 
 import com.fasterxml.jackson.databind.SerializationFeature
 import company.wed.data.db.MysqlDbConnector
-import company.wed.data.features.lucky.luckyModule
+import company.wed.data.repositories.repositoryModule
+import company.wed.features.lucky.luckyModule
 import company.wed.graphql.gqlModule
 import company.wed.graphql.installGql
-import company.wed.data.repositories.repositoryModule
 import company.wed.routes.setupRoutes
 import company.wed.services.serviceModule
 import io.ktor.application.Application
@@ -20,12 +20,12 @@ import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.routing
-import io.ktor.sessions.*
+import io.ktor.sessions.Sessions
+import io.ktor.sessions.cookie
 import org.koin.Logger.slf4jLogger
 import org.koin.ktor.ext.Koin
 import org.slf4j.event.Level
 import java.time.Duration
-import kotlin.collections.mapOf
 import kotlin.collections.set
 
 

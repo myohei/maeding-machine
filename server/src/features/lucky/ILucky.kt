@@ -1,4 +1,4 @@
-package company.wed.data.features.lucky
+package company.wed.features.lucky
 
 interface ILucky {
     fun ohYouAreLucky(): Boolean
